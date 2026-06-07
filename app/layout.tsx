@@ -19,8 +19,37 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Imam Ahmed",
-  description: "Imam Ahmed's portfolio",
+  metadataBase: new URL('https://imambuilds.vercel.app'),
+  title: {
+    default: 'Imam Ahmed — Software Engineer',
+    template: '%s | Imam Ahmed',
+  },
+  description:
+    'Imam Ahmed is a software engineer building modern web and mobile applications using Next.js, TypeScript, React Native, and Node.',
+  authors: [{ name: 'Imam Ahmed', url: 'https://imambuilds.vercel.app' }],
+  openGraph: {
+    title: 'Imam Ahmed — Software Engineer',
+    description:
+      'Portfolio of Imam Ahmed — building modern web and mobile applications using Next.js, TypeScript, React Native, and Node.',
+    type: 'website',
+    locale: 'en_US',
+    siteName: 'Imam Ahmed Portfolio',
+    images: [
+      {
+        url: '/hero.png',
+        width: 1200,
+        height: 630,
+        alt: 'Imam Ahmed portfolio preview',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Imam Ahmed — Software Engineer',
+    description:
+      'Portfolio of Imam Ahmed — building modern web and mobile applications using Next.js, TypeScript, React Native, and Node.',
+    images: ['/hero.png'],
+  },
 };
 
 export default function RootLayout({
