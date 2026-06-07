@@ -21,7 +21,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL('https://imambuilds.vercel.app'),
   title: {
-    default: 'Imam Ahmed — Software Engineer',
+    default: 'Imam Ahmed',
     template: '%s | Imam Ahmed',
   },
   description:

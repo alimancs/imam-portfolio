@@ -167,14 +167,17 @@ export function ScrollTechWall({
     () => buildLayout(items.length, cols),
     [items.length, cols],
   );
+  const [isMobile, setIsMobile] = React.useState(false);
 
   useGSAP(
     () => {
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const mobile = window.matchMedia('(max-width: 640px)').matches;
+      setIsMobile(mobile);
       const itemsEl = gsap.utils.toArray<HTMLElement>(".spw-item");
 
-      if (reduce) {
-        gsap.set(itemsEl, { scale: 1 });
+      if (reduce || mobile) {
+        gsap.set(itemsEl, { clearProps: 'all' });
         return;
       }
 
@@ -206,6 +209,36 @@ export function ScrollTechWall({
     { scope: root, dependencies: [cols], revertOnUpdate: true },
   );
 
+  // Mobile fade-in/out for tech items using IntersectionObserver
+  React.useEffect(() => {
+    if (!isMobile || !root.current) return;
+
+    const items = Array.from(root.current.querySelectorAll<HTMLElement>('.spw-item'));
+    items.forEach((it) => {
+      it.classList.add('opacity-0', 'translate-y-4', 'transition-all', 'duration-600', 'ease-out');
+    });
+
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const el = entry.target as HTMLElement;
+          if (entry.isIntersecting) {
+            el.classList.add('opacity-100');
+            el.classList.remove('opacity-0', 'translate-y-4');
+          } else {
+            el.classList.remove('opacity-100');
+            el.classList.add('opacity-0', 'translate-y-4');
+          }
+        });
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -10% 0px' },
+    );
+
+    items.forEach((it) => obs.observe(it));
+
+    return () => obs.disconnect();
+  }, [isMobile, cols]);
+
   return (
     <section
       ref={root}
@@ -232,7 +265,7 @@ export function ScrollTechWall({
         )}
       </div>
 
-      <div className="relative z-0 mb-[50vh] mt-[50vh]">
+      <div className="relative z-0 mb-[30vh] mt-[30vh] sm:mb-[50vh] sm:mt-[50vh]">
         {layout.map((row, ri) => (
           <div key={ri} className="flex w-full gap-2">
             {row.map((idx, ci) => {

@@ -167,12 +167,12 @@ export default function Home() {
         </RevealSection>
 
         {/* Tech Stack Wall Section */}
-        <RevealSection id="tech" className="w-full scroll-mt-24">
-          <ScrollTechWall className="mb-30" />
+        <RevealSection id="tech" className="w-full mb-15 scroll-mt-24">
+          <ScrollTechWall />
         </RevealSection>
 
         {/* Projects Section */}
-        <section id="projects" className="w-full scroll-mt-24">
+        <section id="projects" className="w-full mt-30 md:mt-5">
           <ProjectPortfolioDemo />
         </section>
 

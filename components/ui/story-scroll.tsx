@@ -28,12 +28,12 @@ export const FlowSection: React.FC<FlowSectionProps> = ({
   <section
     data-flow-section
     aria-label={ariaLabel}
-    className={cx('relative min-h-screen w-full overflow-hidden', className)}
+    className={cx('relative min-h-[70vh] sm:min-h-screen w-full overflow-hidden', className)}
   >
     <div
       data-flow-inner
       className={cx(
-        'flow-art-container relative flex min-h-screen w-full flex-col justify-between gap-6 px-[4vw] pt-[clamp(2rem,8vw,4vw)] pb-[4vw]',
+        'flow-art-container relative flex min-h-[65vh] sm:min-h-screen w-full flex-col justify-between gap-4 sm:gap-6 px-4 sm:px-[4vw] pt-6 sm:pt-[clamp(2rem,8vw,4vw)] pb-6 sm:pb-[4vw]',
         'will-change-transform',
       )}
       style={{ transformOrigin: 'bottom left', ...style }}
@@ -58,6 +58,7 @@ const FlowArt: React.FC<FlowArtProps> = ({
 }) => {
   const containerRef = useRef<HTMLElement>(null);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -67,9 +68,17 @@ const FlowArt: React.FC<FlowArtProps> = ({
     return () => mq.removeEventListener('change', update);
   }, []);
 
+  useEffect(() => {
+    const mm = window.matchMedia('(max-width: 640px)');
+    const onChange = () => setIsMobile(mm.matches);
+    onChange();
+    mm.addEventListener('change', onChange);
+    return () => mm.removeEventListener('change', onChange);
+  }, []);
+
   useGSAP(
     () => {
-      if (!containerRef.current || reducedMotion) return;
+      if (!containerRef.current || reducedMotion || isMobile) return;
 
       const sections = Array.from(
         containerRef.current.querySelectorAll<HTMLElement>('[data-flow-section]'),
@@ -118,8 +127,57 @@ const FlowArt: React.FC<FlowArtProps> = ({
         triggers.forEach((t) => t.kill());
       };
     },
-    { scope: containerRef, dependencies: [childCount(children), reducedMotion] },
+    { scope: containerRef, dependencies: [childCount(children), reducedMotion, isMobile] },
   );
+
+  // Mobile fallback: simple fade-in/out for sections using IntersectionObserver
+  useEffect(() => {
+    if (!isMobile || !containerRef.current) return;
+
+    const sections = Array.from(
+      containerRef.current.querySelectorAll<HTMLElement>('[data-flow-section]'),
+    );
+    if (sections.length === 0) return;
+
+    sections.forEach((s) => {
+      // Remove any inline z-index or transform left behind by GSAP on initial render
+      try {
+        s.style.zIndex = '';
+      } catch (e) {
+        /* ignore */
+      }
+      const inner = s.querySelector<HTMLElement>('.flow-art-container');
+      if (inner) {
+        try {
+          inner.style.transform = '';
+        } catch (e) {
+          /* ignore */
+        }
+      }
+
+      s.classList.add('opacity-0', 'translate-y-6', 'transition-all', 'duration-700', 'ease-out');
+    });
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const el = entry.target as HTMLElement;
+          if (entry.isIntersecting) {
+            el.classList.add('opacity-100');
+            el.classList.remove('opacity-0', 'translate-y-6');
+          } else {
+            el.classList.remove('opacity-100');
+            el.classList.add('opacity-0', 'translate-y-6');
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -10% 0px' },
+    );
+
+    sections.forEach((s) => observer.observe(s));
+
+    return () => observer.disconnect();
+  }, [isMobile, children]);
 
   return (
     <main
