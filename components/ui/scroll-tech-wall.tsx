@@ -1,15 +1,8 @@
 "use client";
 
 import * as React from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
 
 import { cn } from "@/lib/utils";
-
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 export interface TechItem {
   name: string;
@@ -19,289 +12,149 @@ export interface TechItem {
 }
 
 export interface ScrollTechWallProps {
-  /** Big sticky title rendered with `mix-blend-exclusion`. */
+  /** Section heading. */
   title?: React.ReactNode;
-  /** Small line under the title. */
+  /** Supporting label beside the heading. */
   date?: React.ReactNode;
-  /** Scroll hint that fades out as the wall comes into view. */
-  hint?: React.ReactNode;
-  /** Tech stack items to scatter across the wall. */
+  /** Technologies to show in the logo strip. */
   items?: TechItem[];
-  /** Columns on large screens (auto-reduced to 3 on `sm` and 2 on mobile). */
-  columns?: number;
-  /** Show the name / description caption under each logo. Default `true`. */
+  /** Show technology names below the logos. Default `false`. */
   showCaptions?: boolean;
+  /** Seconds each logo takes to travel past. Higher = slower. Default `3`. */
+  secondsPerItem?: number;
+  /**
+   * Stop the animation when the OS has "reduce motion" enabled.
+   * Default `false`: many systems have this on by default, which would freeze the loop.
+   * When `false`, reduced-motion users get a much slower drift instead.
+   */
+  respectReducedMotion?: boolean;
   className?: string;
 }
 
-function buildLayout(count: number, cols: number): number[][] {
-  const rows: number[][] = [];
-  let i = 0;
-  let r = 0;
-  while (i < count) {
-    const row = new Array<number>(cols).fill(-1);
-    const a = (r * 2 + (r % 2)) % cols;
-    row[a] = i++;
-    if (r % 3 === 0 && i < count) {
-      let b = (a + 2) % cols;
-      if (b === a) b = (a + 1) % cols;
-      row[b] = i++;
-    }
-    rows.push(row);
-    r++;
-  }
-  return rows;
-}
-
-function useResponsiveColumns(desired: number): number {
-  const [cols, setCols] = React.useState(desired);
-
-  React.useEffect(() => {
-    const sm = window.matchMedia("(min-width: 640px)");
-    const lg = window.matchMedia("(min-width: 1024px)");
-    const update = () => {
-      if (lg.matches) setCols(desired);
-      else if (sm.matches) setCols(Math.min(desired, 3));
-      else setCols(Math.min(desired, 2));
-    };
-    update();
-    sm.addEventListener("change", update);
-    lg.addEventListener("change", update);
-    return () => {
-      sm.removeEventListener("change", update);
-      lg.removeEventListener("change", update);
-    };
-  }, [desired]);
-
-  return cols;
-}
-
 const DEMO_TECH_ITEMS: TechItem[] = [
-  {
-    name: "Java",
-    description: "Backend / Spring Boot",
-    logoSrc:
-      "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg",
-  },
-  {
-    name: "React",
-    description: "UI Library",
-    logoSrc:
-      "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
-  },
-  {
-    name: "Next.js",
-    description: "React Framework",
-    logoSrc:
-      "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg",
-  },
-  {
-    name: "TypeScript",
-    description: "Typed JavaScript",
-    logoSrc:
-      "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg",
-  },
-  {
-    name: "React Native",
-    description: "Mobile Apps",
-    logoSrc:
-      "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
-  },
-  {
-    name: "Express.js",
-    description: "Node.js Framework",
-    logoSrc:
-      "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg",
-  },
-  {
-    name: "MySQL",
-    description: "Database",
-    logoSrc:
-      "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg",
-  },
-  {
-    name: "Spring Boot",
-    description: "Java Framework",
-    logoSrc:
-      "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg",
-  },
-  {
-    name: "Python",
-    description: "Backend / AI",
-    logoSrc:
-      "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg",
-  },
-  {
-    name: "C",
-    description: "Systems Programming",
-    logoSrc:
-      "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg",
-  },
-  {
-    name: "Tailwind CSS",
-    description: "Utility-first CSS",
-    logoSrc:
-      "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg",
-  },
-  {
-    name: "MongoDB",
-    description: "NoSQL Database",
-    logoSrc:
-      "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg",
-  },
+  { name: "Java", description: "Backend / Spring Boot", logoSrc: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" },
+  { name: "React", description: "UI Library", logoSrc: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" },
+  { name: "Next.js", description: "React Framework", logoSrc: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg" },
+  { name: "TypeScript", description: "Typed JavaScript", logoSrc: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" },
+  { name: "React Native", description: "Mobile Apps", logoSrc: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg" },
+  { name: "Express.js", description: "Node.js Framework", logoSrc: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg" },
+  { name: "MySQL", description: "Database", logoSrc: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" },
+  { name: "Spring Boot", description: "Java Framework", logoSrc: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg" },
+  { name: "Python", description: "Backend / AI", logoSrc: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" },
+  { name: "C", description: "Systems Programming", logoSrc: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg" },
+  { name: "Tailwind CSS", description: "Utility-first CSS", logoSrc: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg" },
+  { name: "MongoDB", description: "NoSQL Database", logoSrc: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg" },
 ];
+
+/**
+ * Fade both edges with a mask instead of overlay gradients.
+ * Works on any background (light, dark, patterned) with no color matching.
+ */
+const EDGE_FADE =
+  "linear-gradient(to right, transparent 0%, #000 12%, #000 88%, transparent 100%)";
 
 export function ScrollTechWall({
   title = "Tech Stack",
   date = "Full-Stack & Mobile",
-  hint = "scroll to explore",
   items = DEMO_TECH_ITEMS,
-  columns = 4,
-  showCaptions = true,
+  showCaptions = false,
+  secondsPerItem = 3,
+  respectReducedMotion = false,
   className,
 }: ScrollTechWallProps) {
-  const root = React.useRef<HTMLElement | null>(null);
-  const hintRef = React.useRef<HTMLDivElement | null>(null);
-  const cols = useResponsiveColumns(Math.max(1, columns));
-  const layout = React.useMemo(
-    () => buildLayout(items.length, cols),
-    [items.length, cols],
-  );
-  const [isMobile, setIsMobile] = React.useState(false);
+  const duration = Math.max(items.length * secondsPerItem, 10);
+  const REDUCED_RULE = respectReducedMotion
+    ? "animation: none;"
+    : "animation-duration: calc(var(--tech-wall-duration, 40s) * 2);";
 
-  useGSAP(
-    () => {
-      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const mobile = window.matchMedia('(max-width: 640px)').matches;
-      setIsMobile(mobile);
-      const itemsEl = gsap.utils.toArray<HTMLElement>(".spw-item");
-
-      if (reduce || mobile) {
-        gsap.set(itemsEl, { clearProps: 'all' });
-        return;
-      }
-
-      gsap.to(hintRef.current, {
-        autoAlpha: 0,
-        ease: "none",
-        scrollTrigger: {
-          trigger: root.current,
-          start: "top top",
-          end: "+=40%",
-          scrub: true,
-        },
-      });
-
-      itemsEl.forEach((el) => {
-        gsap
-          .timeline({
-            scrollTrigger: {
-              trigger: el,
-              start: "top bottom",
-              end: "bottom top",
-              scrub: true,
-            },
-          })
-          .fromTo(el, { scale: 0 }, { scale: 1, ease: "power2.out", duration: 0.5 })
-          .to(el, { scale: 0, ease: "power2.in", duration: 0.5 });
-      });
-    },
-    { scope: root, dependencies: [cols], revertOnUpdate: true },
-  );
-
-  // Mobile fade-in/out for tech items using IntersectionObserver
-  React.useEffect(() => {
-    if (!isMobile || !root.current) return;
-
-    const items = Array.from(root.current.querySelectorAll<HTMLElement>('.spw-item'));
-    items.forEach((it) => {
-      it.classList.add('opacity-0', 'translate-y-4', 'transition-all', 'duration-600', 'ease-out');
-    });
-
-    const obs = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const el = entry.target as HTMLElement;
-          if (entry.isIntersecting) {
-            el.classList.add('opacity-100');
-            el.classList.remove('opacity-0', 'translate-y-4');
-          } else {
-            el.classList.remove('opacity-100');
-            el.classList.add('opacity-0', 'translate-y-4');
-          }
-        });
-      },
-      { threshold: 0.15, rootMargin: '0px 0px -10% 0px' },
-    );
-
-    items.forEach((it) => obs.observe(it));
-
-    return () => obs.disconnect();
-  }, [isMobile, cols]);
+  const renderItems = (hidden: boolean) =>
+    items.map((item) => (
+      <li
+        key={`${hidden ? "dup" : "main"}-${item.name}`}
+        aria-hidden={hidden || undefined}
+        role={hidden ? undefined : "img"}
+        aria-label={
+          hidden
+            ? undefined
+            : `${item.name}${showCaptions ? ` — ${item.description}` : ""}`
+        }
+        className="mr-4 flex h-15 w-15 shrink-0 items-center justify-center border border-black/5 bg-white p-2 transition-transform duration-300 hover:-translate-y-0.5 dark:border-white/10 dark:bg-zinc-900"
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={item.logoSrc}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          draggable={false}
+          className="h-full w-full object-contain"
+        />
+      </li>
+    ));
 
   return (
     <section
-      ref={root}
       aria-label={typeof title === "string" ? title : undefined}
-      className={cn("relative w-full px-4 py-8 text-foreground sm:px-0", className)}
+      className={cn("w-[90%] md:w-[50%] mx-auto py-5 text-foreground", className)}
     >
+      {/* Local keyframes so the component stays self-contained */}
+      <style>{`
+        @keyframes tech-wall-marquee {
+          from { transform: translateX(0); }
+          to   { transform: translateX(-50%); }
+        }
+        .tech-wall-track {
+          animation: tech-wall-marquee var(--tech-wall-duration, 40s) linear infinite;
+          will-change: transform;
+        }
+        .tech-wall-viewport:hover .tech-wall-track,
+        .tech-wall-viewport:focus-within .tech-wall-track {
+          animation-play-state: paused;
+        }
+        .tech-wall-viewport {
+          overflow: hidden;
+          scrollbar-width: none;
+        }
+        .tech-wall-viewport::-webkit-scrollbar { display: none; }
+        @media (prefers-reduced-motion: reduce) {
+          .tech-wall-track {
+            ${REDUCED_RULE}
+          }
+        }
+      `}</style>
+
+      <div className="mb-5 flex items-end justify-between gap-4 px-1">
+        <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
+      </div>
+
       <div
-        ref={hintRef}
-        className="pointer-events-none absolute left-1/2 top-[60vh] grid -translate-x-1/2 content-start justify-items-center gap-6 text-center"
+        role="region"
+        aria-label="Technology logos"
+        className="tech-wall-viewport w-full py-1.5"
+        style={{
+          maskImage: EDGE_FADE,
+          WebkitMaskImage: EDGE_FADE,
+        }}
       >
-        <span className="relative max-w-[12ch] text-xs uppercase leading-tight text-muted-foreground after:absolute after:left-1/2 after:top-full after:h-16 after:w-px after:bg-gradient-to-b after:from-transparent after:to-muted-foreground/40 after:content-['']">
-          {hint}
-        </span>
+        <ul
+          className="tech-wall-track flex w-max items-center"
+          style={
+            { "--tech-wall-duration": `${duration}s` } as React.CSSProperties
+          }
+        >
+          {renderItems(false)}
+          {/* Duplicate set makes the -50% loop seamless; hidden from assistive tech */}
+          {renderItems(true)}
+        </ul>
       </div>
 
-      <div className="pointer-events-none sticky top-1/2 z-20 -translate-y-1/2 text-center text-white mix-blend-exclusion">
-        <h2 className="text-5xl font-semibold font-changa sm:text-7xl md:text-8xl lg:text-9xl">
-          {title}
-        </h2>
-        {date && (
-          <p className="mt-1 text-xs uppercase tracking-wide text-white/60 sm:text-sm">
-            {date}
-          </p>
-        )}
-      </div>
-
-      <div className="relative z-0 mb-[30vh] mt-[30vh] sm:mb-[50vh] sm:mt-[50vh]">
-        {layout.map((row, ri) => (
-          <div key={ri} className="flex w-full gap-2">
-            {row.map((idx, ci) => {
-              if (idx === -1) return <div key={ci} className="aspect-square flex-1 min-w-0" />;
-
-              const item = items[idx];
-              const origin = ci < cols / 2 ? "right bottom" : "left bottom";
-
-              return (
-                <div key={ci} className="aspect-square flex-1 min-w-0">
-                  <div
-                    className="spw-item relative h-full w-full"
-                    style={{ transformOrigin: origin, transform: "scale(0)" }}
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={item.logoSrc}
-                      alt={item.name}
-                      loading="lazy"
-                      decoding="async"
-                      draggable={false}
-                      className="h-full w-full object-contain p-6 grayscale contrast-[1.15] filter transition-transform duration-500 ease-in-out hover:scale-95 dark:invert"
-                    />
-                    {showCaptions && (
-                      <div className="absolute -bottom-2 left-0 flex w-full translate-y-full justify-between gap-2 text-[11px] uppercase leading-tight text-muted-foreground sm:text-sm">
-                        <span className="truncate">{item.name}</span>
-                        <span className="shrink-0">({item.description})</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        ))}
-      </div>
+      {showCaptions && (
+        <ul className="mt-4 flex flex-wrap justify-center gap-x-4 gap-y-1 text-[10px] uppercase tracking-wide text-muted-foreground sm:text-xs">
+          {items.map((item) => (
+            <li key={item.name}>{item.name}</li>
+          ))}
+        </ul>
+      )}
     </section>
   );
 }

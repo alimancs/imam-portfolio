@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import FlowArt, { FlowSection } from './story-scroll';
 
 const projects = [
@@ -11,12 +12,6 @@ const projects = [
       'A comprehensive entertainment platform offering diverse giveaways, game shows, and reality shows designed to suit diverse tastes and interests.',
     techStack: ['Next.js', 'TypeScript', 'Tailwind CSS', 'Node.js', 'MongoDB'],
     liveUrl: 'https://acrossnig.com',
-    color: '#fd5200',
-    stats: [
-      { value: '₦1M+', label: 'Prize Pool' },
-      { value: '10K+', label: 'Active Users' },
-      { value: '15+', label: 'Game Shows' },
-    ],
     challenge:
       'Building a scalable platform that handles real-time voting, user engagement, and secure prize distribution across multiple game formats.',
   },
@@ -29,11 +24,6 @@ const projects = [
     techStack: ['React', 'Express.js', 'MySQL', 'Spring Boot', 'Tailwind CSS'],
     liveUrl: 'https://jooneintegratedfarms.com',
     color: '#2e7d32',
-    stats: [
-      { value: '94%', label: 'Satisfaction Rate' },
-      { value: '2K+', label: 'Farmers Empowered' },
-      { value: '50+', label: 'Products' },
-    ],
     challenge:
       'Creating a robust inventory management system for perishable agricultural products and implementing a nationwide delivery logistics solution.',
   },
@@ -46,11 +36,6 @@ const projects = [
     techStack: ['React', 'Node.js', 'MongoDB', 'Socket.io', 'Tailwind CSS'],
     liveUrl: 'https://naijapredictor.com',
     color: '#1a237e',
-    stats: [
-      { value: '₦100K', label: 'Weekly Prize' },
-      { value: '5K+', label: 'Active Players' },
-      { value: 'AI', label: 'Powered Pundit' },
-    ],
     challenge:
       'Implementing real-time score tracking and ensuring fair play across thousands of simultaneous predictions.',
   },
@@ -63,138 +48,185 @@ const projects = [
     techStack: ['React', 'Next.js', 'TypeScript', 'Prisma', 'PostgreSQL', 'Tailwind CSS'],
     liveUrl: 'https://keepstreaks.netlify.app',
     color: '#6b46c1',
-    stats: [
-      { value: '10K+', label: 'Active Streaks' },
-      { value: '95%', label: 'Retention Rate' },
-      { value: '1M+', label: 'Days Tracked' },
-    ],
     challenge:
       'Designing an addictive yet non-intrusive notification system that motivates users without causing notification fatigue.',
   },
 ];
 
+/* ---------------------------------------------------------------- *
+ * Slug helper — gives each section a stable anchor id
+ * ---------------------------------------------------------------- */
+const slugify = (s: string) =>
+  s
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+
+/* ---------------------------------------------------------------- *
+ * Wikipedia-style infobox
+ * ---------------------------------------------------------------- */
+interface InfoboxRow {
+  label: string;
+  value: React.ReactNode;
+}
+
+function Infobox({ title, rows }: { title: string; rows: InfoboxRow[] }) {
+  return (
+    <aside
+      className="mb-4 border border-[#a2a9b1] bg-[#f8f9fa] text-[0.8125rem] leading-[1.5] text-[#202122] sm:float-right sm:ml-5 sm:w-[17.5rem] sm:clear-right"
+      aria-label={`${title} quick facts`}
+    >
+      <div className="border-b border-[#a2a9b1] bg-[#eaecf0] px-3 py-2 text-center text-[0.95rem]">
+        {title}
+      </div>
+      <table className="w-full border-collapse">
+        <tbody>
+          {rows.map((row, i) => (
+            <tr key={i} className="border-b border-[#c8ccd1] align-top last:border-b-0">
+              <th scope="row" className="w-[38%] px-3 py-2 text-left align-top font-bold">
+                {row.label}
+              </th>
+              <td className="px-3 py-2">{row.value}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </aside>
+  );
+}
+
+/* ---------------------------------------------------------------- *
+ * Hatnote — the italic "For other uses, see…" line
+ * ---------------------------------------------------------------- */
+function Hatnote({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="mb-4 pl-6 text-[0.875rem] italic leading-[1.5] text-[#54595d]">{children}</p>
+  );
+}
+
+
+
+/* ---------------------------------------------------------------- *
+ * Portfolio page
+ * ---------------------------------------------------------------- */
 export default function ProjectPortfolioDemo() {
   return (
-    <FlowArt aria-label="My Project Portfolio">
-      <FlowSection aria-label="Hero" style={{ color: '#fff' }}>
-        <p className="text-xs sm:text-sm font-bold uppercase tracking-[0.2em] text-primary">01 — My Work</p>
-        <hr className="my-[1vw] border-none border-t border-white/20" />
-        <div>
-          <h1 className="text-[clamp(1.8rem,9vw,4.5rem)] sm:text-[clamp(2rem,8vw,5.5rem)] font-changa font-bold leading-[0.9] uppercase tracking-tight">
-            Building
-            <br />
-            Digital
-            <br />
-            Experiences
-          </h1>
-        </div>
-        <hr className="my-[1vw] border-none border-t border-white/20" />
-        <p className="mt-auto max-w-full sm:max-w-[50ch] text-[clamp(0.95rem,2.5vw,1.5rem)] sm:text-[clamp(1rem,2.2vw,2rem)] font-normal leading-relaxed">
-          A showcase of my journey building scalable web applications, from entertainment platforms to productivity tools.
+    <FlowArt title="Project Portfolio" aria-label="My Project Portfolio">
+      {/* ---------- Lead section ---------- */}
+      <FlowSection aria-label="Introduction">
+        <p>
+          Each entry below summarises the product, its technical stack, and the primary
+          engineering challenge addressed during development.
         </p>
       </FlowSection>
 
-      {projects.map((project, index) => (
+      {projects.map((project) => (
         <FlowSection
           key={project.id}
+          id={slugify(project.title)}
+          title={project.title}
           aria-label={project.title}
-          style={{ backgroundColor: project.color, color: index % 2 === 0 ? '#fff' : '#000' }}
+          className="clear-both mb-17"
         >
-          <p className="text-xs font-bold uppercase tracking-[0.2em] opacity-80">
-            {String(index + 2).padStart(2, '0')} — Featured Project
-          </p>
-          <hr className="my-[2vw] border-none border-t border-current opacity-30" />
+          <Infobox
+            title={project.title}
+            rows={[
+              { label: 'Type', value: project.subtitle },
+              { label: 'Developer', value: 'Alimam Ahmed' },
+              {
+                label: 'Stack',
+                value: project.techStack.join(', '),
+              },
+              {
+                label: 'Website',
+                value: (
+                  <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
+                    {new URL(project.liveUrl).hostname.replace(/^www\./, '')}
+                  </a>
+                ),
+              },
+            ]}
+          />
 
-          <div>
-            <h2 className="text-[clamp(2rem,9vw,7rem)] font-changa leading-[0.85] uppercase tracking-tight">
-              {project.title}
-            </h2>
-            <p className="text-lg mt-4 font-medium opacity-80">{project.subtitle}</p>
-          </div>
-
-          <hr className="my-[2vw] border-none border-t border-current opacity-30" />
-
-          <div className="flex flex-wrap gap-4">
-            {project.stats.map((stat, idx) => (
-              <div key={idx} className="min-w-[120px] sm:min-w-[150px] flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-lg">•</span>
-                  <p className="text-sm sm:text-[0.95rem] font-bold uppercase tracking-wider">{stat.label}</p>
-                </div>
-                <p className="text-2xl sm:text-3xl font-bold">{stat.value}</p>
-              </div>
-            ))}
-          </div>
-
-          <hr className="my-[1vw] border-none border-t border-current opacity-30" />
-
-          <p className="max-w-full sm:max-w-[50ch] text-[clamp(0.95rem,2vw,1.4rem)] sm:text-[clamp(1rem,2vw,1.5rem)] font-normal leading-relaxed">
-            {project.description}
+          <p>
+                        {project.description}
           </p>
 
-          <hr className="my-[1vw] border-none border-t border-current opacity-30" />
-
-          <div className="flex flex-wrap gap-2">
-            {project.techStack.map((tech, idx) => (
-              <span
-                key={idx}
-                className="px-3 py-1 text-xs sm:text-sm rounded-full bg-white/20 backdrop-blur-sm"
-              >
-                {tech}
-              </span>
+          <h3 className="mb-2 mt-6 text-zinc-300 text-xs">
+            Stack
+          </h3>
+          <ul>
+            {project.techStack.map((tech) => (
+              <li className='text-zinc-300 text-xs' key={tech}>{tech}</li>
             ))}
-          </div>
+          </ul>
 
-          <hr className="my-[1vw] border-none border-t border-current opacity-30" />
+          <h3 className="mb-2 mt-6 text-zinc-300 text-xs">
+            Engineering challenge
+          </h3>
+          <p className='text-zinc-300 text-xs'>{project.challenge}</p>
 
-          <div>
-            <p className="text-sm sm:text-base font-bold uppercase tracking-wider mb-2">The Challenge</p>
-            <p className="text-sm sm:text-base leading-relaxed opacity-80 max-w-full sm:max-w-[40ch]">{project.challenge}</p>
-          </div>
-
-          <hr className="my-[2vw] border-none border-t border-current opacity-30" />
-
-          <div className="mt-auto">
-            <a
-              href={project.liveUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider border-b-2 border-current pb-1 hover:opacity-70 transition-opacity"
-            >
-              Live Demo
+          <p className="mt-4 text-zinc-600 text-xs">
+            Live deployment:{' '}
+            <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
+              {project.liveUrl}
             </a>
-          </div>
+          </p>
         </FlowSection>
       ))}
 
-      <FlowSection aria-label="Get in touch" style={{ backgroundColor: '#000', color: '#fff' }}>
-        <p className="text-xs font-bold uppercase tracking-[0.2em]">Let's Collaborate</p>
-        <hr className="my-[2vw] border-none border-t border-white/20" />
-        <div>
-          <h2 className="text-[clamp(2rem,9vw,7rem)] font-changa font-bold leading-[0.85] uppercase tracking-tight">
-            Have a
-            <br />
-            Project
-            <br />
-            in Mind?
-          </h2>
-        </div>
-        <hr className="my-[2vw] border-none border-t border-white/20" />
-        <p className="mt-auto max-w-[50ch] text-[clamp(1rem,2.5vw,2rem)] font-normal leading-relaxed">
-          From concept to deployment — let's build something remarkable together.
+      {/* ---------- Contact ---------- */}
+      <FlowSection title="Contact" id="contact" className="clear-both">
+        <p>
+          I am available for freelance and full-time engagements. From concept to
+          deployment — collaboration enquiries are welcome.
         </p>
-               <div className="flex gap-4 mt-4">
-          <a href="mailto:aliman2952003@gmail.com" className="text-sm uppercase tracking-wider hover:opacity-70 transition-opacity">
-            Email Me
-          </a>
-          <a href="https://github.com/alimancs" target="_blank" rel="noopener noreferrer" className="text-sm uppercase tracking-wider hover:opacity-70 transition-opacity">
-            GitHub
-          </a>
-          <a href="https://www.linkedin.com/in/alimam-ahmed-67b686402/" target="_blank" rel="noopener noreferrer" className="text-sm uppercase tracking-wider hover:opacity-70 transition-opacity">
-            LinkedIn
-          </a>
-        </div>
-        <hr className="my-[2vw] border-none border-t border-white/20" />
+        <ul>
+          <li>
+            Email:{' '}
+            <a href="mailto:aliman2952003@gmail.com">aliman2952003@gmail.com</a>
+          </li>
+          <li>
+            GitHub:{' '}
+            <a href="https://github.com/alimancs" target="_blank" rel="noopener noreferrer">
+              github.com/alimancs
+            </a>
+          </li>
+          <li>
+            LinkedIn:{' '}
+            <a
+              href="https://www.linkedin.com/in/alimam-ahmed-67b686402/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              linkedin.com/in/alimam-ahmed-67b686402
+            </a>
+          </li>
+          <li>
+            X:{' '}
+            <a
+              href="https://twitter.com/imam.builds"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              https://x.com/imam.builds
+            </a>
+          </li>
+        </ul>
+      </FlowSection>
+
+      {/* ---------- External links ---------- */}
+      <FlowSection title="External links" id="external-links" className="clear-both">
+        <ul>
+          {projects.map((p) => (
+            <li key={p.id}>
+              <a href={p.liveUrl} target="_blank" rel="noopener noreferrer">
+                {p.title}
+              </a>{' '}
+              — official site
+            </li>
+          ))}
+        </ul>
       </FlowSection>
     </FlowArt>
   );
