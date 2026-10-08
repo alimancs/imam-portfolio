@@ -58,6 +58,7 @@ export default function Home() {
           <Link href="/" className="text-base sm:text-lg md:text-xl text-black dark:text-zinc-100">
             imam.builds
           </Link>
+        
           <div className="flex items-center justify-between w-auto">
             <button
               type="button"
@@ -140,8 +141,11 @@ export default function Home() {
           <div className="relative h-30 w-30 mx-auto rounded-full overflow-hidden">
             <Image src="/imam.png" alt="Imam Ahmed" fill objectFit="cover" priority />
           </div>
-          <div className="mt-3 text-xl mx-auto text-center text-slate-300">
+          <div className="mt-3 text-xl mx-auto text-center text-zinc-200">
             Imam Ahmed
+          </div>
+          <div className="text-sm mx-auto text-center text-slate-500">
+          Abuja, Nigeria
           </div>
           <div className="flex flex-col mt-5 text-3xl text-center mx-auto gap-0">
             <div className="w-fit flex flex-row mx-auto items-center gap-3">
