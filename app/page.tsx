@@ -8,6 +8,7 @@ import ScrollTechWall from "@/components/ui/scroll-tech-wall";
 import Image from "next/image";
 import Link from "next/link";
 import { Instagram, Github, Twitter, Linkedin, ChevronUp, Menu, X, Terminal, Server, LayersPlus } from "lucide-react";
+import ExperienceSection from "@/components/ui/experience-section";
 
 export default function Home() {
   const stack = [
@@ -52,102 +53,19 @@ export default function Home() {
 
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-100 font-sans dark:bg-black">
-      {/* Minimalist Header */}
-      <header className={`fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 transition-transform duration-300 ease-out ${heroPassed ? '-translate-y-full opacity-0 pointer-events-none' : 'translate-y-0 opacity-100'}`}>
-        <div className="md:w-[50%] w-full mx-auto px-4 py-5 sm:px-6 sm:py-5 md:px-8 flex gap-2 flex-row sm:items-center justify-between">
-          <Link href="/" className="text-base sm:text-lg md:text-xl text-black dark:text-zinc-100">
-            imam.builds
-          </Link>
-        
-          <div className="flex items-center justify-between w-auto">
-            <button
-              type="button"
-              onClick={() => setMobileNavOpen((prev) => !prev)}
-              className="sm:hidden inline-flex items-center justify-centertext-gray-800 transition duration-200 ease-out hover:-translate-y-0.5 hover:scale-105 dark:text-gray-100 dark:hover:bg-slate-800"
-              aria-expanded={mobileNavOpen}
-              aria-label="Toggle navigation menu"
-            >
-              {mobileNavOpen ? <X size={20} strokeWidth={1} /> : <Menu size={20} strokeWidth={1} />}
-            </button>
-            <nav className="hidden sm:flex flex-wrap justify-center gap-4 text-sm sm:justify-end">
-              <a
-                href="#hero"
-                className="transition-transform duration-200 ease-out hover:-translate-y-0.5 hover:scale-105 hover:text-primary"
-                onClick={(event) => {
-                  event.preventDefault();
-                  scrollToSection('hero');
-                }}
-              >
-                Work
-              </a>
-              <a
-                href="#tech"
-                className="transition-transform duration-200 ease-out hover:-translate-y-0.5 hover:scale-105 hover:text-primary"
-                onClick={(event) => {
-                  event.preventDefault();
-                  scrollToSection('tech');
-                }}
-              >
-                Tech
-              </a>
-              <a
-                href="#projects"
-                className="transition-transform duration-200 ease-out hover:-translate-y-0.5 hover:scale-105 hover:text-primary"
-                onClick={(event) => {
-                  event.preventDefault();
-                  scrollToSection('projects');
-                }}
-              >
-                Projects
-              </a>
-              <a
-                href="#contact"
-                className="transition-transform duration-200 ease-out hover:-translate-y-0.5 hover:scale-105 hover:text-primary"
-                onClick={(event) => {
-                  event.preventDefault();
-                  scrollToSection('contact');
-                }}
-              >
-                Contact
-              </a>
-            </nav>
-          </div>
-        </div>
-
-        {mobileNavOpen && (
-          <div className="sm:hidden border-t pt-20 border-gray-200 h-screen dark:border-gray-800 bg-white/80 dark:bg-black/80 shadow-xl backdrop-blur-md">
-            <div className="max-w-6xl mx-auto px-4 py-7 flex flex-col justify-center gap-5 text-base">
-              {['hero', 'tech', 'projects', 'contact'].map((section) => {
-                const label = section === 'hero' ? 'Work' : section.charAt(0).toUpperCase() + section.slice(1);
-                return (
-                  <button
-                    key={section}
-                    type="button"
-                    onClick={() => scrollToSection(section)}
-                    className="w-full text-center text-2xl tracking-wide text-gray-900 transition-transform duration-200 ease-out hover:-translate-y-0.5 hover:scale-105 hover:text-primary dark:border-slate-700 dark:text-gray-100 dark:hover:bg-slate-900"
-                  >
-                    {label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
-      </header>
-
-      <main className="flex flex-1 w-full max-w-6xl flex-col items-center pb-28 pt-40 bg-white dark:bg-black sm:items-start">
+       <main className="flex flex-1 w-full max-w-7xl flex-col items-center pb-28 pt-15 bg-white dark:bg-black sm:items-start">
         {/* Hero Section */}
-        <RevealSection id="hero" className="w-full h-fit mb-12 md:mb-15 scroll-mt-24 px-4 sm:px-0">
-          <div className="relative h-30 w-30 mx-auto rounded-full overflow-hidden">
+        <RevealSection id="hero" className="w-full h-fit mb-5 scroll-mt-24 px-4 sm:px-0">
+          <div className="relative h-25 w-25 mx-auto rounded-full overflow-hidden">
             <Image src="/imam.png" alt="Imam Ahmed" fill objectFit="cover" priority />
           </div>
           <div className="mt-3 text-xl mx-auto text-center text-zinc-200">
             Imam Ahmed
           </div>
           <div className="text-sm mx-auto text-center text-slate-500">
-          Abuja, Nigeria
+            Abuja, Nigeria
           </div>
-          <div className="flex flex-col mt-5 text-3xl text-center mx-auto gap-0">
+          <div className="flex flex-col mt-5 text-xl text-center mx-auto gap-0">
             <div className="w-fit flex flex-row mx-auto items-center gap-3">
               <span>Fullstack</span>
               <LayersPlus size={28} strokeWidth={1} color="white"/>
@@ -157,15 +75,28 @@ export default function Home() {
           </div>
         </RevealSection>
 
+        
+
         {/* Tech Stack Wall Section */}
-        <RevealSection id="tech" className="w-full mb-15 scroll-mt-10">
-          <ScrollTechWall />
+        <RevealSection className="w-full md:w-[50%] mx-auto">
+          <h2
+            className={'mb-2 text-md font-semibold'}
+          >
+          About me
+          </h2>
+          <p>
+            I believe a jack of all trades is a master of none, but oftentimes better than a master of one.
+          </p>
         </RevealSection>
 
+        <RevealSection id="tech" className="w-full mb-5 scroll-mt-10">
+          <ScrollTechWall />
+        </RevealSection>
+        
+        <ExperienceSection/>
+
         {/* Projects Section */}
-        <section id="projects" className="w-full md:mt-5">
-          <ProjectPortfolioDemo />
-        </section>
+        <ProjectPortfolioDemo />
 
         {/* Minimalist Footer */}
         <footer className="w-full md:w-[50%] mx-auto mt-20 pb-15">

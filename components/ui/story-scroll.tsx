@@ -48,13 +48,13 @@ export const FlowSection: React.FC<FlowSectionProps> = ({
     id={id}
     aria-label={ariaLabel}
     style={style}
-    className={cx('mb-9 scroll-mt-4 last:mb-0', className)}
+    className={cx('mb-9 scroll-mt-4 border-l-2 border-l-zinc-500 hover:border-l-blue-600 pl-4 last:mb-0', className)}
   >
     {title ? (
       <h2
         className={cx(
           headingStyles,
-          'mb-3 pb-1 text-md font-semibold',
+          'mb-2 text-md font-semibold',
         )}
       >
         {title}
@@ -91,16 +91,16 @@ const FlowArt: React.FC<FlowArtProps> = ({
         className,
       )}
     >
-      <div className="mx-auto w-[90%] md:w-[50%] px-4 py-6 md:px-0 sm:py-8">
+      <div className="mx-auto w-[90%] md:w-[50%] px-4 md:px-0 sm:py-8">
         {title ? (
-          <h1
+          <span
             className={cx(
               headingStyles,
-              'mb-4 border-b border-zinc-800 pb-2 text-lg font-semibold tracking-tight',
+              'mb-2 text-xl tracking-tight',
             )}
           >
             {title}
-          </h1>
+          </span>
         ) : null}
 
         <div className={cx(bodyText, linkStyles, proseSpacing)}>{children}</div>

@@ -78,7 +78,7 @@ export function ScrollTechWall({
             ? undefined
             : `${item.name}${showCaptions ? ` — ${item.description}` : ""}`
         }
-        className="mr-4 flex h-15 w-15 shrink-0 items-center justify-center border border-black/5 bg-white p-2 transition-transform duration-300 hover:-translate-y-0.5 dark:border-white/10 dark:bg-zinc-900"
+        className="mr-4 flex h-10 w-10 shrink-0 items-center justify-center border border-black/5 bg-white p-2 transition-transform duration-300 hover:-translate-y-0.5 dark:border-white/10 dark:bg-zinc-900"
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -95,7 +95,7 @@ export function ScrollTechWall({
   return (
     <section
       aria-label={typeof title === "string" ? title : undefined}
-      className={cn("w-[90%] md:w-[50%] mx-auto py-5 text-foreground", className)}
+      className={cn("w-[90%] md:w-[50%] mx-auto py-3 text-foreground", className)}
     >
       {/* Local keyframes so the component stays self-contained */}
       <style>{`
@@ -122,11 +122,6 @@ export function ScrollTechWall({
           }
         }
       `}</style>
-
-      <div className="mb-5 flex items-end justify-between gap-4 px-1">
-        <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
-      </div>
-
       <div
         role="region"
         aria-label="Technology logos"
@@ -148,13 +143,6 @@ export function ScrollTechWall({
         </ul>
       </div>
 
-      {showCaptions && (
-        <ul className="mt-4 flex flex-wrap justify-center gap-x-4 gap-y-1 text-[10px] uppercase tracking-wide text-muted-foreground sm:text-xs">
-          {items.map((item) => (
-            <li key={item.name}>{item.name}</li>
-          ))}
-        </ul>
-      )}
     </section>
   );
 }
