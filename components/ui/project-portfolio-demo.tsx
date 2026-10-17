@@ -140,9 +140,9 @@ export default function ProjectPortfolioDemo() {
               </div>
             </a>
           </div>
-          <div className='flex flex-row gap-3 mb-3'>
+          <div className='flex flex-row flex-wrap gap-3 mb-3'>
             {project.techStack.map((tech) => (
-              <div className='text-zinc-900 bg-zinc-500 px-2 py-1 rounded hover:bg-zinc-100 text-xs' key={tech}>{tech}</div>
+              <div className='text-zinc-900 bg-zinc-500 px-2 py-1 hover:bg-zinc-100 text-xs' key={tech}>{tech}</div>
             ))}
           </div>
 
