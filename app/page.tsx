@@ -78,7 +78,7 @@ export default function Home() {
         
 
         {/* Tech Stack Wall Section */}
-        <RevealSection className="w-full md:w-[50%] mx-auto">
+        <RevealSection className="w-full md:w-[50%] px-4 md:px-0 mx-auto">
           <h2
             className={'mb-2 text-md font-semibold'}
           >
@@ -92,7 +92,7 @@ export default function Home() {
         <RevealSection id="tech" className="w-full mb-5 scroll-mt-10">
           <ScrollTechWall />
         </RevealSection>
-        
+
         <ExperienceSection/>
 
         {/* Projects Section */}
