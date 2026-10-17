@@ -58,56 +58,6 @@ const projects = [
   },
 ];
 
-/* ---------------------------------------------------------------- *
- * Slug helper — gives each section a stable anchor id
- * ---------------------------------------------------------------- */
-const slugify = (s: string) =>
-  s
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
-
-/* ---------------------------------------------------------------- *
- * Wikipedia-style infobox
- * ---------------------------------------------------------------- */
-interface InfoboxRow {
-  label: string;
-  value: React.ReactNode;
-}
-
-function Infobox({ title, rows }: { title: string; rows: InfoboxRow[] }) {
-  return (
-    <aside
-      className="mb-4 border border-[#a2a9b1] bg-[#f8f9fa] text-[0.8125rem] leading-[1.5] text-[#202122] sm:float-right sm:ml-5 sm:w-[17.5rem] sm:clear-right"
-      aria-label={`${title} quick facts`}
-    >
-      <div className="border-b border-[#a2a9b1] bg-[#eaecf0] px-3 py-2 text-center text-[0.95rem]">
-        {title}
-      </div>
-      <table className="w-full border-collapse">
-        <tbody>
-          {rows.map((row, i) => (
-            <tr key={i} className="border-b border-[#c8ccd1] align-top last:border-b-0">
-              <th scope="row" className="w-[38%] px-3 py-2 text-left align-top font-bold">
-                {row.label}
-              </th>
-              <td className="px-3 py-2">{row.value}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </aside>
-  );
-}
-
-/* ---------------------------------------------------------------- *
- * Hatnote — the italic "For other uses, see…" line
- * ---------------------------------------------------------------- */
-function Hatnote({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="mb-4 pl-6 text-[0.875rem] italic leading-[1.5] text-[#54595d]">{children}</p>
-  );
-}
 
 
 
@@ -122,7 +72,6 @@ export default function ProjectPortfolioDemo() {
       {projects.map((project) => (
         <FlowSection
           key={project.id}
-          id={slugify(project.title)}
           title={project.title}
           aria-label={project.title}
           className="clear-both mb-5"

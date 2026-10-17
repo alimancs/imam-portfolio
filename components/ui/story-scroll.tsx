@@ -48,7 +48,7 @@ export const FlowSection: React.FC<FlowSectionProps> = ({
     id={id}
     aria-label={ariaLabel}
     style={style}
-    className={cx('mb-9 scroll-mt-4 border-l-2 border-l-zinc-500 hover:border-l-blue-600 pl-4 last:mb-0', className)}
+    className={cx('mb-9 scroll-mt-4 border-l-2 border-l-zinc-500 hover:border-l-blue-600 pl-4 ', className)}
   >
     {title ? (
       <h2
@@ -91,7 +91,7 @@ const FlowArt: React.FC<FlowArtProps> = ({
         className,
       )}
     >
-      <div className="mx-auto w-[90%] md:w-[50%] px-4 md:px-0 sm:py-8">
+      <div className="mx-auto w-full md:w-[50%] px-4 md:px-0 sm:py-8">
         {title ? (
           <span
             className={cx(
