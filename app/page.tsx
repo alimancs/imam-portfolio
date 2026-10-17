@@ -57,7 +57,7 @@ export default function Home() {
         {/* Hero Section */}
         <RevealSection id="hero" className="w-full h-fit mb-5 scroll-mt-24 px-4 sm:px-0">
           <div className="relative h-25 w-25 mx-auto rounded-full overflow-hidden">
-            <Image src="/imam.png" alt="Imam Ahmed" fill objectFit="cover" priority />
+            <Image src="/dp.jpeg" alt="Imam Ahmed" fill objectFit="cover" priority />
           </div>
           <div className="mt-3 text-xl mx-auto text-center text-zinc-200">
             Imam Ahmed

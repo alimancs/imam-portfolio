@@ -110,8 +110,8 @@ export default function ExperienceSection() {
             </a>
           </div>
           <ul className='flex flex-col gap-1 mb-3'>
-            {e.did.map((d) => (
-              <li className='no-underline'>{d}</li>
+            {e.did.map((d, i) => (
+              <li key={i} className='no-underline'>{d}</li>
             ))}
           </ul>
         </FlowSection>
